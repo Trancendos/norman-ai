@@ -58,6 +58,37 @@ Outputs:
 
 These reports identify missing controls per repository and classify risk (`HIGH`, `MEDIUM`, `LOW`) by control coverage score.
 
+### Current Baseline Snapshot (from latest audit run)
+
+- Repos scanned: **43**
+- HIGH risk: **41**
+- MEDIUM risk: **0**
+- LOW risk: **2** (`trancendos-ecosystem`, `secrets-portal`)
+- Note: snapshot evaluates each repo's **default branch** at scan time; repositories improved on feature branches will remain HIGH until merged.
+
+Most repositories currently have README + manifest files but are missing:
+
+- Dependabot configuration
+- SECURITY policy
+- CODEOWNERS
+- Security workflow
+- CI workflow
+
+This indicates a broad governance standardization gap rather than isolated failures.
+
+### Highest Priority Remediation Wave (First 10)
+
+1. `the-workshop`
+2. `the-void`
+3. `the-treasury`
+4. `the-sanctuary`
+5. `the-observatory`
+6. `the-nexus`
+7. `the-lighthouse`
+8. `the-library`
+9. `the-ice-box`
+10. `the-hive`
+
 ## Modularity and Repo Boundaries Review
 
 ### Decision Framework: Merge vs Separate
@@ -80,6 +111,8 @@ Consider **merging** when:
 - Keep `norman-ai` as a separate service module.
 - Enforce integration through shared contracts (for example via `shared-core` versioned interfaces).
 - Avoid cross-repo ad-hoc imports; use package releases and explicit version constraints.
+- Keep integration hubs (`central-plexus`, `the-nexus`, `trancendos-ecosystem`) focused on orchestration/contracts, not business logic accumulation.
+- If a service has no independent deployment/release need and duplicates domain ownership, merge it into its owning bounded context.
 
 ## Program Requirements by Repo Type
 
