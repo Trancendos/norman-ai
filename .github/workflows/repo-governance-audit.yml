@@ -1,0 +1,36 @@
+# Managed-by: trancendos-governance-v1
+name: Repository Governance Audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 5 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  governance-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run organization repository governance audit
+        env:
+          GH_TOKEN: ${{ secrets.ORG_GOVERNANCE_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          npm run audit:repos
+          npm run audit:workflows
+          npm run audit:vendors
+
+      - name: Upload governance audit reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: repo-governance-audit
+          path: reports/*

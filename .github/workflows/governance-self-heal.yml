@@ -1,0 +1,52 @@
+# Managed-by: trancendos-governance-v1
+name: Governance Self-Heal
+
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: "Apply baseline changes to target repositories"
+        type: boolean
+        required: true
+        default: false
+      all_repos:
+        description: "Target all repositories (otherwise top high-risk set)"
+        type: boolean
+        required: true
+        default: true
+  schedule:
+    - cron: "0 6 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  self-heal:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run governance self-heal cycle
+        env:
+          GH_TOKEN: ${{ secrets.ORG_GOVERNANCE_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          ARGS="--owner=Trancendos --limit=200 --output-dir=reports --top=10"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.apply }}" = "true" ]; then
+            ARGS="$ARGS --apply"
+            if [ "${{ inputs.all_repos }}" = "true" ]; then
+              ARGS="$ARGS --all"
+            fi
+          fi
+          node scripts/security/self-heal-governance.mjs $ARGS
+
+      - name: Upload self-heal reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: governance-self-heal-reports
+          path: reports/*

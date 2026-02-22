@@ -8,7 +8,18 @@
     "build": "tsc",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
-    "test": "vitest"
+    "test": "vitest",
+    "security:cve": "node scripts/security/check-cves.mjs",
+    "security:n-1": "node scripts/security/check-n-minus-one.mjs",
+    "security:deps": "node scripts/security/check-cves.mjs && node scripts/security/check-n-minus-one.mjs",
+    "audit:repos": "node scripts/security/audit-github-repos.mjs --owner=Trancendos --limit=200",
+    "audit:workflows": "node scripts/security/audit-workflow-actions.mjs --owner=Trancendos --limit=200",
+    "audit:vendors": "node scripts/security/analyze-tech-stack-vendor-risk.mjs --owner=Trancendos --limit=200",
+    "governance:validate-docs": "node scripts/security/validate-governance-documents.mjs",
+    "governance:unify": "node scripts/security/rollout-unified-baseline.mjs --owner=Trancendos --limit=200 --top=10",
+    "governance:unify:apply": "node scripts/security/rollout-unified-baseline.mjs --owner=Trancendos --limit=200 --all --apply",
+    "governance:self-heal": "node scripts/security/self-heal-governance.mjs --owner=Trancendos --limit=200 --top=10",
+    "compliance:full": "npm run security:deps && npm run governance:validate-docs && npm run audit:repos && npm run audit:workflows && npm run audit:vendors"
   },
   "author": "Trancendos",
   "license": "MIT",
@@ -17,9 +28,9 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@types/node": "^20.10.0",
+    "@types/node": "^25.3.0",
     "typescript": "^5.3.0",
     "tsx": "^4.6.0",
-    "vitest": "^1.0.0"
+    "vitest": "^4.0.18"
   }
 }

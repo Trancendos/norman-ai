@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trancendos.dev/schemas/external-services.schema.json",
+  "title": "External Service Compliance Registry",
+  "type": "object",
+  "required": [
+    "managedBy",
+    "schemaVersion",
+    "reviewCadenceDays",
+    "services"
+  ],
+  "properties": {
+    "managedBy": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schemaVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reviewCadenceDays": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "services": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "provider",
+          "category",
+          "criticality",
+          "documents",
+          "complianceReview",
+          "resilience"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "provider": {
+            "type": "string",
+            "minLength": 1
+          },
+          "category": {
+            "type": "string",
+            "minLength": 1
+          },
+          "criticality": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "documents": {
+            "type": "object",
+            "required": [
+              "eulaUrl",
+              "tosUrl",
+              "aupUrl",
+              "privacyUrl",
+              "dpaUrl",
+              "factUrl",
+              "fastUrl",
+              "slaUrl"
+            ],
+            "properties": {
+              "eulaUrl": {
+                "type": "string",
+                "minLength": 1
+              },
+              "tosUrl": {
+                "type": "string",
+                "minLength": 1
+              },
+              "aupUrl": {
+                "type": "string",
+                "minLength": 1
+              },
+              "privacyUrl": {
+                "type": "string",
+                "minLength": 1
+              },
+              "dpaUrl": {
+                "type": "string",
+                "minLength": 1
+              },
+              "factUrl": {
+                "type": "string",
+                "minLength": 1
+              },
+              "fastUrl": {
+                "type": "string",
+                "minLength": 1
+              },
+              "slaUrl": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "additionalProperties": false
+          },
+          "complianceReview": {
+            "type": "object",
+            "required": [
+              "lastReviewedUtc",
+              "approvedBy",
+              "status"
+            ],
+            "properties": {
+              "lastReviewedUtc": {
+                "type": "string",
+                "minLength": 1
+              },
+              "approvedBy": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "approved",
+                  "pending_replacement",
+                  "blocked"
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "resilience": {
+            "type": "object",
+            "required": [
+              "hasNoSingleDependencyRisk",
+              "alternativeProviders",
+              "switchPlanSummary",
+              "maxDowntimeMinutes"
+            ],
+            "properties": {
+              "hasNoSingleDependencyRisk": {
+                "type": "boolean"
+              },
+              "alternativeProviders": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "switchPlanSummary": {
+                "type": "string",
+                "minLength": 1
+              },
+              "maxDowntimeMinutes": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,34 @@
+{
+  "managedBy": "trancendos-governance-v1",
+  "schemaVersion": "1.0.0",
+  "visionHorizon": 2060,
+  "principles": [
+    "interoperability-first architecture",
+    "provider portability by design",
+    "automated compliance and policy validation",
+    "human-governed autonomous adaptation",
+    "security-by-default and zero-trust evolution"
+  ],
+  "capabilityTargets": {
+    "shortTerm_12Months": [
+      "baseline governance controls in all active repositories",
+      "contract and dependency policy checks in CI",
+      "cross-repo drift reporting"
+    ],
+    "midTerm_3Years": [
+      "policy-as-code everywhere",
+      "automated service substitution testing",
+      "full architecture decision traceability"
+    ],
+    "longTerm_2060": [
+      "self-healing platform controls with human override",
+      "multi-cloud and multi-vendor resilience without downtime",
+      "compliance evidence generated continuously"
+    ]
+  },
+  "annualReview": {
+    "required": true,
+    "ownerRole": "platform-governance",
+    "nextReviewUtc": "2027-01-15T00:00:00Z"
+  }
+}

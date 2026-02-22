@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trancendos.dev/schemas/governance-standards.schema.json",
+  "title": "Repository Governance Standards",
+  "type": "object",
+  "required": [
+    "managedBy",
+    "schemaVersion",
+    "repositoryType",
+    "lifecycleCoverage",
+    "standards"
+  ],
+  "properties": {
+    "managedBy": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schemaVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repositoryType": {
+      "type": "string",
+      "enum": [
+        "service-module",
+        "integration-hub",
+        "shared-library",
+        "platform",
+        "general"
+      ]
+    },
+    "lifecycleCoverage": {
+      "type": "object",
+      "required": [
+        "built",
+        "implemented",
+        "designed",
+        "discovered",
+        "maintained"
+      ],
+      "properties": {
+        "built": {
+          "type": "boolean"
+        },
+        "implemented": {
+          "type": "boolean"
+        },
+        "designed": {
+          "type": "boolean"
+        },
+        "discovered": {
+          "type": "boolean"
+        },
+        "maintained": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "standards": {
+      "type": "object",
+      "required": [
+        "modularDesign",
+        "fluidicDynamicEnvironment",
+        "adaptiveUxUi",
+        "selfLearningLivingDocumentation",
+        "zeroCostOptimization",
+        "legalEthicalGlobalCompliance"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}
