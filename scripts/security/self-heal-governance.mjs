@@ -81,7 +81,7 @@ async function main() {
     rolloutArgs.push("--all");
   }
   if (args.apply) {
-    rolloutArgs.push("--apply");
+    rolloutArgs.push("--apply", "--strict");
   }
 
   const commands = [

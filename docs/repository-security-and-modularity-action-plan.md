@@ -72,10 +72,18 @@ These reports identify missing controls per repository and classify risk (`HIGH`
 ### Current Baseline Snapshot (from latest audit run)
 
 - Repos scanned: **43**
-- HIGH risk: **41**
+- HIGH risk: **42**
 - MEDIUM risk: **0**
-- LOW risk: **2** (`trancendos-ecosystem`, `secrets-portal`)
+- LOW risk: **1** (`norman-ai`)
 - Note: snapshot evaluates each repo's **default branch** at scan time; repositories improved on feature branches will remain HIGH until merged.
+
+### Latest Remediation Attempt (Automated Rollout)
+
+- Planned baseline writes: **340**
+- Applied baseline writes: **8**
+- Failed writes: **332**
+- Primary blocker: GitHub API `HTTP 403 Resource not accessible by integration` for cross-repo writes.
+- Required action: provide an org-wide token with repository write permissions (for example `ORG_GOVERNANCE_TOKEN`) for full multi-repo rollout.
 
 Most repositories currently have README + manifest files but are missing:
 
@@ -155,7 +163,7 @@ Consider **merging** when:
 - [x] Enable CVE scanning and dependency freshness checks in this repo.
 - [x] Enable Dependabot in this repo.
 - [x] Add owner-wide governance audit automation.
-- [ ] Roll out baseline controls to top 10 highest-risk repos.
+- [ ] Roll out baseline controls to top 10 highest-risk repos (automation ready; blocked by cross-repo token scope).
 
 ### Phase 1 (Week 2-4): Baseline Standardization
 
@@ -188,6 +196,6 @@ Consider **merging** when:
 | Cross-repo gap detection | Completed (automation) | `scripts/security/audit-github-repos.mjs` |
 | Workflow/action unification analytics | Completed (automation) | `scripts/security/audit-workflow-actions.mjs` |
 | Tech stack and supplier concentration analytics | Completed (automation) | `scripts/security/analyze-tech-stack-vendor-risk.mjs` |
-| Cross-repo remediation rollout | In progress | `scripts/security/rollout-unified-baseline.mjs` + rollout reports |
+| Cross-repo remediation rollout | In progress (partially executed) | `scripts/security/rollout-unified-baseline.mjs` + `repo-unified-baseline-rollout.*` |
 | Merge/separate architecture decisions | Pending | Requires boundary mapping + dependency graph per repo |
 

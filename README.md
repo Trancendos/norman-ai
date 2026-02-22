@@ -74,6 +74,8 @@ npm run governance:unify:apply
 npm run governance:self-heal
 ```
 
+For cross-repository write operations (`governance:unify:apply`), ensure `GH_TOKEN` has write access to target repositories (for example an org-scoped PAT in `ORG_GOVERNANCE_TOKEN`).
+
 ### GitHub Workflows Added
 
 - `.github/workflows/security-posture.yml`

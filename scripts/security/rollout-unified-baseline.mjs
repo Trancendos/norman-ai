@@ -351,6 +351,7 @@ async function main() {
   let totalPlannedWrites = 0;
   let totalAppliedWrites = 0;
   let totalFailures = 0;
+  let permissionFailures = 0;
 
   for (const repo of targetRepos) {
     const repoFullName = repo.nameWithOwner;
@@ -410,6 +411,9 @@ async function main() {
           appliedCount += 1;
         } else {
           totalFailures += 1;
+          if (/HTTP 403|Resource not accessible by integration/i.test(writeResponse.stderr || "")) {
+            permissionFailures += 1;
+          }
           errors.push(`${writeItem.targetPath}: ${writeResponse.stderr || "write failed"}`);
         }
       }
@@ -468,6 +472,9 @@ async function main() {
     "",
     "- Drift-skipped files are existing files that differ from managed templates and do not contain the managed marker.",
     "- Re-run with `--apply` to execute changes. Managed template files are updated automatically unless `--no-overwrite-managed` is set.",
+    permissionFailures > 0
+      ? "- Permission failures detected. Use a token with write access to target repositories (for example `GH_TOKEN` mapped to an org-wide PAT such as `ORG_GOVERNANCE_TOKEN`)."
+      : "- No cross-repository permission failures detected.",
     "",
   ];
 

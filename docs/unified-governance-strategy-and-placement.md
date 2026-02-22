@@ -29,6 +29,7 @@ Create one consistent, proactive operating model across repositories so controls
 4. **Controlled Auto-Remediation**
    - `rollout-unified-baseline.mjs` can apply missing managed baseline files.
    - Existing unmanaged custom files are never overwritten by default.
+   - Cross-repository writes require a token with org/repo write scope (recommended secret name: `ORG_GOVERNANCE_TOKEN`).
 
 5. **Self-Heal + Validate Loop**
    - `self-heal-governance.mjs` runs:
