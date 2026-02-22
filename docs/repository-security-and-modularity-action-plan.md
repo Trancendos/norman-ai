@@ -66,6 +66,9 @@ Outputs:
 - `reports/workflow-action-standardization-audit.md`
 - `reports/repo-tech-stack-vendor-risk.csv`
 - `reports/repo-tech-stack-vendor-risk.md`
+- `reports/repo-unified-baseline-rollout.csv`
+- `reports/repo-unified-baseline-rollout.md`
+- `reports/governance-self-heal-report.md`
 
 These reports identify missing controls per repository and classify risk (`HIGH`, `MEDIUM`, `LOW`) by control coverage score.
 
