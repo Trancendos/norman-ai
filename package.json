@@ -8,7 +8,12 @@
     "build": "tsc",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
-    "test": "vitest"
+    "test": "vitest",
+    "security:cve": "node scripts/security/check-cves.mjs",
+    "security:n-1": "node scripts/security/check-n-minus-one.mjs",
+    "security:deps": "node scripts/security/check-cves.mjs && node scripts/security/check-n-minus-one.mjs",
+    "audit:repos": "node scripts/security/audit-github-repos.mjs --owner=Trancendos --limit=200",
+    "compliance:full": "npm run security:deps && npm run audit:repos"
   },
   "author": "Trancendos",
   "license": "MIT",
