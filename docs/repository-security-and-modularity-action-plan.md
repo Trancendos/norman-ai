@@ -26,9 +26,15 @@ Because only one repository is checked out locally in this environment, deep cod
 - `scripts/security/check-cves.mjs` (OSV-based direct dependency CVE scanning).
 - `scripts/security/check-n-minus-one.mjs` (N-0 / N-1 compliance enforcement).
 - `scripts/security/audit-github-repos.mjs` (cross-repo governance baseline scan).
+- `scripts/security/audit-workflow-actions.mjs` (cross-repo workflow/action inventory + drift scan).
+- `scripts/security/analyze-tech-stack-vendor-risk.mjs` (cross-repo stack and provider concentration analysis).
+- `scripts/security/rollout-unified-baseline.mjs` (managed baseline rollout and remediation engine).
+- `scripts/security/self-heal-governance.mjs` (audit -> remediate -> re-audit orchestration).
+- `scripts/security/validate-governance-documents.mjs` (local governance document validation).
 - `.github/dependabot.yml` (proactive dependency update management).
-- `.github/workflows/security-posture.yml` (dependency review + CVE + N-policy + CodeQL).
+- `.github/workflows/security-posture.yml` (dependency review + baseline governance and local security checks).
 - `.github/workflows/repo-governance-audit.yml` (scheduled owner-wide governance audit).
+- `.github/workflows/governance-self-heal.yml` (scheduled/dispatchable self-heal pipeline).
 - README updates and operational guidance.
 
 ## Repository Control Baseline (Required for Every Active App/Service Repo)
@@ -55,6 +61,11 @@ Outputs:
 
 - `reports/repo-governance-audit.csv`
 - `reports/repo-governance-audit.md`
+- `reports/repo-workflow-action-audit.csv`
+- `reports/action-usage-inventory.csv`
+- `reports/workflow-action-standardization-audit.md`
+- `reports/repo-tech-stack-vendor-risk.csv`
+- `reports/repo-tech-stack-vendor-risk.md`
 
 These reports identify missing controls per repository and classify risk (`HIGH`, `MEDIUM`, `LOW`) by control coverage score.
 
@@ -175,6 +186,8 @@ Consider **merging** when:
 | Dependency analysis + N-0/N-1 enforcement | Completed (this repo) | `scripts/security/check-n-minus-one.mjs` |
 | Proactive dependency management | Completed (this repo) | `.github/dependabot.yml` |
 | Cross-repo gap detection | Completed (automation) | `scripts/security/audit-github-repos.mjs` |
-| Cross-repo remediation rollout | Pending | Requires applying baseline controls to each active repo |
+| Workflow/action unification analytics | Completed (automation) | `scripts/security/audit-workflow-actions.mjs` |
+| Tech stack and supplier concentration analytics | Completed (automation) | `scripts/security/analyze-tech-stack-vendor-risk.mjs` |
+| Cross-repo remediation rollout | In progress | `scripts/security/rollout-unified-baseline.mjs` + rollout reports |
 | Merge/separate architecture decisions | Pending | Requires boundary mapping + dependency graph per repo |
 

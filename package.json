@@ -13,7 +13,13 @@
     "security:n-1": "node scripts/security/check-n-minus-one.mjs",
     "security:deps": "node scripts/security/check-cves.mjs && node scripts/security/check-n-minus-one.mjs",
     "audit:repos": "node scripts/security/audit-github-repos.mjs --owner=Trancendos --limit=200",
-    "compliance:full": "npm run security:deps && npm run audit:repos"
+    "audit:workflows": "node scripts/security/audit-workflow-actions.mjs --owner=Trancendos --limit=200",
+    "audit:vendors": "node scripts/security/analyze-tech-stack-vendor-risk.mjs --owner=Trancendos --limit=200",
+    "governance:validate-docs": "node scripts/security/validate-governance-documents.mjs",
+    "governance:unify": "node scripts/security/rollout-unified-baseline.mjs --owner=Trancendos --limit=200 --top=10",
+    "governance:unify:apply": "node scripts/security/rollout-unified-baseline.mjs --owner=Trancendos --limit=200 --all --apply",
+    "governance:self-heal": "node scripts/security/self-heal-governance.mjs --owner=Trancendos --limit=200 --top=10",
+    "compliance:full": "npm run security:deps && npm run governance:validate-docs && npm run audit:repos && npm run audit:workflows && npm run audit:vendors"
   },
   "author": "Trancendos",
   "license": "MIT",

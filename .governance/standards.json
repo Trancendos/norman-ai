@@ -1,0 +1,66 @@
+{
+  "managedBy": "trancendos-governance-v1",
+  "schemaVersion": "1.0.0",
+  "repositoryType": "service-module",
+  "lifecycleCoverage": {
+    "built": true,
+    "implemented": true,
+    "designed": true,
+    "discovered": true,
+    "maintained": true
+  },
+  "standards": {
+    "modularDesign": {
+      "required": true,
+      "status": "in_place",
+      "controls": [
+        "service boundary around norman-ai domain",
+        "shared contracts through shared-core",
+        "explicit interface versioning"
+      ]
+    },
+    "fluidicDynamicEnvironment": {
+      "required": true,
+      "status": "planned",
+      "controls": [
+        "feature flags for progressive rollout",
+        "runtime configuration profiles",
+        "backward-compatible API evolution"
+      ]
+    },
+    "adaptiveUxUi": {
+      "required": false,
+      "status": "not_applicable",
+      "controls": [
+        "this repository is a backend/service module"
+      ]
+    },
+    "selfLearningLivingDocumentation": {
+      "required": true,
+      "status": "in_place",
+      "controls": [
+        "automated governance reports",
+        "scheduled audit outputs",
+        "versioned action plans"
+      ]
+    },
+    "zeroCostOptimization": {
+      "required": true,
+      "status": "in_place",
+      "controls": [
+        "free-tier-first dependencies",
+        "scheduled dependency drift review",
+        "avoid unnecessary paid external services"
+      ]
+    },
+    "legalEthicalGlobalCompliance": {
+      "required": true,
+      "status": "in_place",
+      "controls": [
+        "external service legal document tracking",
+        "license policy gates in dependency review",
+        "compliance review cadence and ownership"
+      ]
+    }
+  }
+}

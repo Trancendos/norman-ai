@@ -1,3 +1,4 @@
+<!-- Managed-by: trancendos-governance-v1 -->
 # Security Policy
 
 ## Supported Versions

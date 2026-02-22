@@ -4,6 +4,8 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 
+const MANAGED_MARKER = "Managed-by: trancendos-governance-v1";
+
 function parseArgs(argv) {
   const args = {
     owner: "",
@@ -92,6 +94,26 @@ function listDir(repoFullName, ref, dirPath = "") {
   return { ok: false, entries: [], error: "unable to parse directory listing" };
 }
 
+function fetchFile(repoFullName, ref, targetPath) {
+  const endpoint = buildContentsEndpoint(repoFullName, targetPath, ref);
+  const response = runGh(["api", endpoint]);
+  if (response.status !== 0) {
+    const notFound = /404|Not Found|HTTP 404/i.test(response.stderr);
+    if (notFound) {
+      return { ok: true, exists: false, content: "" };
+    }
+    return { ok: false, exists: false, content: "", error: response.stderr || "gh api request failed" };
+  }
+
+  const parsed = parseJsonSafe(response.stdout, null);
+  if (!parsed || typeof parsed !== "object") {
+    return { ok: false, exists: false, content: "", error: "unable to parse file payload" };
+  }
+
+  const decoded = Buffer.from((parsed.content || "").replace(/\n/g, ""), "base64").toString("utf8");
+  return { ok: true, exists: true, content: decoded };
+}
+
 function hasAnyName(entries, expectedNames) {
   const names = new Set(entries.map((item) => item?.name).filter(Boolean));
   return expectedNames.some((name) => names.has(name));
@@ -133,11 +155,13 @@ function csvEscape(value) {
   return `"${text.replace(/"/g, '""')}"`;
 }
 
-function riskTier(score) {
-  if (score >= 6) {
+function riskTier(score, totalControls) {
+  const lowThreshold = Math.max(8, Math.ceil(totalControls * 0.8));
+  const mediumThreshold = Math.max(6, Math.ceil(totalControls * 0.6));
+  if (score >= lowThreshold) {
     return "LOW";
   }
-  if (score >= 4) {
+  if (score >= mediumThreshold) {
     return "MEDIUM";
   }
   return "HIGH";
@@ -196,13 +220,18 @@ async function main() {
 
     const root = listDir(repoFullName, defaultBranch, "");
     const githubDir = listDir(repoFullName, defaultBranch, ".github");
+    let governanceDir = { ok: true, entries: [] };
     let workflows = { ok: true, entries: [] };
+
+    if (root.ok && hasAnyName(root.entries, [".governance"])) {
+      governanceDir = listDir(repoFullName, defaultBranch, ".governance");
+    }
 
     if (githubDir.ok && hasAnyName(githubDir.entries, ["workflows"])) {
       workflows = listDir(repoFullName, defaultBranch, ".github/workflows");
     }
 
-    const repoErrors = [root, githubDir, workflows]
+    const repoErrors = [root, githubDir, governanceDir, workflows]
       .filter((item) => !item.ok)
       .map((item) => item.error)
       .filter(Boolean);
@@ -223,6 +252,38 @@ async function main() {
     const hasCiWorkflow = workflowNames.some((name) => /(ci|test|build|lint|release)/i.test(name));
     const hasManifest = detectManifest(root.entries);
     const hasReadme = hasAnyName(root.entries, ["README.md"]);
+    const hasGovernanceStandards = hasAnyName(governanceDir.entries, ["standards.json"]);
+    const hasExternalServiceInventory = hasAnyName(governanceDir.entries, ["external-services.json"]);
+    const hasFutureReadinessPlan = hasAnyName(governanceDir.entries, ["future-ready-2060.json"]);
+
+    const securityWorkflowFile = fetchFile(
+      repoFullName,
+      defaultBranch,
+      ".github/workflows/security-posture.yml",
+    );
+    const ciWorkflowFile = fetchFile(repoFullName, defaultBranch, ".github/workflows/ci-standard.yml");
+
+    if (!securityWorkflowFile.ok) {
+      errors.push({
+        repo: repoFullName,
+        errors: [`security-posture.yml: ${securityWorkflowFile.error}`],
+      });
+    }
+    if (!ciWorkflowFile.ok) {
+      errors.push({
+        repo: repoFullName,
+        errors: [`ci-standard.yml: ${ciWorkflowFile.error}`],
+      });
+    }
+
+    const hasManagedSecurityWorkflow =
+      securityWorkflowFile.ok &&
+      securityWorkflowFile.exists &&
+      securityWorkflowFile.content.includes(MANAGED_MARKER);
+    const hasManagedCiWorkflow =
+      ciWorkflowFile.ok &&
+      ciWorkflowFile.exists &&
+      ciWorkflowFile.content.includes(MANAGED_MARKER);
 
     const controls = {
       hasDependabot,
@@ -232,6 +293,11 @@ async function main() {
       hasCiWorkflow,
       hasManifest,
       hasReadme,
+      hasGovernanceStandards,
+      hasExternalServiceInventory,
+      hasFutureReadinessPlan,
+      hasManagedSecurityWorkflow,
+      hasManagedCiWorkflow,
     };
 
     const score = Object.values(controls).filter(Boolean).length;
@@ -246,7 +312,8 @@ async function main() {
       updatedAt: repo.updatedAt || "",
       repoType: classifyRepoType(repo.name || ""),
       score,
-      risk: riskTier(score),
+      totalControls: Object.keys(controls).length,
+      risk: riskTier(score, Object.keys(controls).length),
       missingControls: missingControls.join(";"),
       ...controls,
     });
@@ -270,6 +337,7 @@ async function main() {
     "updatedAt",
     "repoType",
     "score",
+    "totalControls",
     "risk",
     "hasDependabot",
     "hasSecurityPolicy",
@@ -278,6 +346,11 @@ async function main() {
     "hasCiWorkflow",
     "hasManifest",
     "hasReadme",
+    "hasGovernanceStandards",
+    "hasExternalServiceInventory",
+    "hasFutureReadinessPlan",
+    "hasManagedSecurityWorkflow",
+    "hasManagedCiWorkflow",
     "missingControls",
   ];
 
@@ -311,7 +384,7 @@ async function main() {
     "| --- | --- | --- | --- |",
     ...records.slice(0, 20).map(
       (record) =>
-        `| ${record.repo} | ${record.risk} | ${record.score}/7 | ${record.missingControls || "none"} |`,
+        `| ${record.repo} | ${record.risk} | ${record.score}/${record.totalControls} | ${record.missingControls || "none"} |`,
     ),
     "",
     "## Control Definitions",
@@ -323,6 +396,11 @@ async function main() {
     "- hasCiWorkflow: workflow filename indicates CI validation",
     "- hasManifest: common package/application manifest exists",
     "- hasReadme: `README.md` exists",
+    "- hasGovernanceStandards: `.governance/standards.json` exists",
+    "- hasExternalServiceInventory: `.governance/external-services.json` exists",
+    "- hasFutureReadinessPlan: `.governance/future-ready-2060.json` exists",
+    "- hasManagedSecurityWorkflow: managed baseline `security-posture.yml` is applied",
+    "- hasManagedCiWorkflow: managed baseline `ci-standard.yml` is applied",
     "",
   ];
 

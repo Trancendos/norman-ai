@@ -1,0 +1,38 @@
+{
+  "managedBy": "trancendos-governance-v1",
+  "schemaVersion": "1.0.0",
+  "reviewCadenceDays": 90,
+  "services": [
+    {
+      "name": "example-service",
+      "provider": "example-provider",
+      "category": "infrastructure",
+      "criticality": "high",
+      "documents": {
+        "eulaUrl": "https://example.com/eula",
+        "tosUrl": "https://example.com/tos",
+        "aupUrl": "https://example.com/aup",
+        "privacyUrl": "https://example.com/privacy",
+        "dpaUrl": "https://example.com/dpa",
+        "factUrl": "https://example.com/fact",
+        "fastUrl": "https://example.com/fast",
+        "slaUrl": "https://example.com/sla"
+      },
+      "complianceReview": {
+        "lastReviewedUtc": "2026-01-01T00:00:00Z",
+        "approvedBy": [
+          "compliance-owner"
+        ],
+        "status": "pending_replacement"
+      },
+      "resilience": {
+        "hasNoSingleDependencyRisk": false,
+        "alternativeProviders": [
+          "secondary-provider"
+        ],
+        "switchPlanSummary": "Define migration runbook and cutover sequence",
+        "maxDowntimeMinutes": 15
+      }
+    }
+  ]
+}

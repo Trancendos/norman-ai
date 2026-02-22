@@ -1,0 +1,34 @@
+{
+  "managedBy": "trancendos-governance-v1",
+  "schemaVersion": "1.0.0",
+  "visionHorizon": 2060,
+  "principles": [
+    "modularity and portability first",
+    "compliance-as-code and continuous evidence",
+    "security by default with measured autonomy",
+    "vendor-neutral architecture and runtime abstraction",
+    "human-governed self-healing systems"
+  ],
+  "capabilityTargets": {
+    "shortTerm_12Months": [
+      "baseline controls active in all target repositories",
+      "cross-repo risk scorecards generated weekly",
+      "provider substitution plans documented for critical services"
+    ],
+    "midTerm_3Years": [
+      "automated multi-vendor failover validation",
+      "fully versioned service contract catalog",
+      "compliance and legal checks at merge gates"
+    ],
+    "longTerm_2060": [
+      "continuous autonomous remediation with policy guardrails",
+      "zero-downtime provider switching for critical capabilities",
+      "global compliance posture updated in near real time"
+    ]
+  },
+  "annualReview": {
+    "required": true,
+    "ownerRole": "platform-governance",
+    "nextReviewUtc": "2027-01-15T00:00:00Z"
+  }
+}

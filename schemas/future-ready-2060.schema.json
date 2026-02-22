@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trancendos.dev/schemas/future-ready-2060.schema.json",
+  "title": "Future Readiness 2060 Plan",
+  "type": "object",
+  "required": [
+    "managedBy",
+    "schemaVersion",
+    "visionHorizon",
+    "principles",
+    "capabilityTargets",
+    "annualReview"
+  ],
+  "properties": {
+    "managedBy": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schemaVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "visionHorizon": {
+      "type": "integer",
+      "minimum": 2030
+    },
+    "principles": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "capabilityTargets": {
+      "type": "object",
+      "required": [
+        "shortTerm_12Months",
+        "midTerm_3Years",
+        "longTerm_2060"
+      ],
+      "properties": {
+        "shortTerm_12Months": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "midTerm_3Years": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "longTerm_2060": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "annualReview": {
+      "type": "object",
+      "required": [
+        "required",
+        "ownerRole",
+        "nextReviewUtc"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "ownerRole": {
+          "type": "string",
+          "minLength": 1
+        },
+        "nextReviewUtc": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
