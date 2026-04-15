@@ -57,7 +57,7 @@ jobs:
         if: hashFiles('package.json') != ''
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24"
 
       - name: Run dependency security checks when available
         if: hashFiles('package.json') != ''
